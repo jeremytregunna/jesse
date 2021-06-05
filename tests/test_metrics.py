@@ -17,22 +17,24 @@ def set_up(routes, fee=0):
 
 
 def get_btc_candles():
-    candles = {}
-    candles[jh.key(exchanges.SANDBOX, 'BTCUSD')] = {
-        'exchange': exchanges.SANDBOX,
-        'symbol': 'BTCUSD',
-        'candles': fake_range_candle_from_range_prices(range(1, 100))
+    return {
+        jh.key(exchanges.SANDBOX, 'BTCUSD'): {
+            'exchange': exchanges.SANDBOX,
+            'symbol': 'BTCUSD',
+            'candles': fake_range_candle_from_range_prices(range(1, 100)),
+        }
     }
-    return candles
 
 
 def get_btc_and_eth_candles():
-    candles = {}
-    candles[jh.key(exchanges.SANDBOX, 'BTCUSD')] = {
-        'exchange': exchanges.SANDBOX,
-        'symbol': 'BTCUSD',
-        'candles': fake_range_candle_from_range_prices(range(101, 200))
+    candles = {
+        jh.key(exchanges.SANDBOX, 'BTCUSD'): {
+            'exchange': exchanges.SANDBOX,
+            'symbol': 'BTCUSD',
+            'candles': fake_range_candle_from_range_prices(range(101, 200)),
+        }
     }
+
     candles[jh.key(exchanges.SANDBOX, 'ETHUSD')] = {
         'exchange': exchanges.SANDBOX,
         'symbol': 'ETHUSD',

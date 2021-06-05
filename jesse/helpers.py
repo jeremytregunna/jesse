@@ -348,17 +348,14 @@ def convert_number(old_max, old_min, new_max, new_min, old_value):
 
     old_range = (old_max - old_min)
     new_range = (new_max - new_min)
-    new_value = (((old_value - old_min) * new_range) / old_range) + new_min
-
-    return new_value
+    return (((old_value - old_min) * new_range) / old_range) + new_min
 
 
 def normalize(x, x_min, x_max):
     """
     Rescaling data to have values between 0 and 1
     """
-    x_new = (x - x_min) / (x_max - x_min)
-    return x_new
+    return (x - x_min) / (x_max - x_min)
 
 
 def file_exists(path: str) -> bool:
@@ -475,10 +472,10 @@ def orderbook_insertion_index_search(arr, target, ascending=True):
     lower = 0
     upper = len(arr)
 
-    if ascending:
-        while lower < upper:
-            x = lower + (upper - lower) // 2
-            val = arr[x][0]
+    while lower < upper:
+        x = lower + (upper - lower) // 2
+        val = arr[x][0]
+        if ascending:
             if target == val:
                 return True, x
             elif target > val:
@@ -489,10 +486,7 @@ def orderbook_insertion_index_search(arr, target, ascending=True):
                 if lower == x:
                     return False, lower
                 upper = x
-    else:
-        while lower < upper:
-            x = lower + (upper - lower) // 2
-            val = arr[x][0]
+        else:
             if target == val:
                 return True, x
             elif target < val:
@@ -529,7 +523,7 @@ def unique_list(arr) -> list:
     return [x for x in arr if not (x in seen or seen_add(x))]
 
 
-CACHED_CONFIG = dict()
+CACHED_CONFIG = {}
 
 
 def get_config(keys: str, default=None):
@@ -546,7 +540,7 @@ def get_config(keys: str, default=None):
     if not str:
         raise ValueError('keys string cannot be empty')
 
-    if not keys in CACHED_CONFIG:
+    if keys not in CACHED_CONFIG:
         from functools import reduce
         from jesse.config import config
         CACHED_CONFIG[keys] = reduce(lambda d, k: d.get(k, default) if isinstance(d, dict) else default,
@@ -584,8 +578,7 @@ def round_price_for_live_mode(price, roundable_price):
         price_round_precision = abs(n - 4)
     else:
         price_round_precision = 3 - n
-        if price_round_precision < 0:
-            price_round_precision = 0
+        price_round_precision = max(price_round_precision, 0)
 
     return np.round(roundable_price, price_round_precision)
 
@@ -604,8 +597,7 @@ def round_qty_for_live_mode(price, roundable_qty):
         qty_round_precision = 0
     else:
         qty_round_precision = n + 1
-        if qty_round_precision > 3:
-            qty_round_precision = 3
+        qty_round_precision = min(qty_round_precision, 3)
 
     return np.round(roundable_qty, qty_round_precision)
 

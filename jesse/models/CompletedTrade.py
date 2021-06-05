@@ -35,9 +35,7 @@ class CompletedTrade:
             setattr(self, a, attributes[a])
 
     def toJSON(self):
-        orders = []
-        for o in self.orders:
-            orders.append(o.__dict__)
+        orders = [o.__dict__ for o in self.orders]
         return {
             "id": self.id,
             "strategy_name": self.strategy_name,

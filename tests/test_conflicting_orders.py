@@ -15,13 +15,13 @@ def set_up(routes):
 
 
 def get_btc_candles():
-    candles = {}
-    candles[jh.key(exchanges.SANDBOX, 'BTCUSD')] = {
-        'exchange': exchanges.SANDBOX,
-        'symbol': 'BTCUSD',
-        'candles': fake_range_candle_from_range_prices(range(1, 100))
+    return {
+        jh.key(exchanges.SANDBOX, 'BTCUSD'): {
+            'exchange': exchanges.SANDBOX,
+            'symbol': 'BTCUSD',
+            'candles': fake_range_candle_from_range_prices(range(1, 100)),
+        }
     }
-    return candles
 
 
 def test_conflicting_orders():

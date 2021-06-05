@@ -26,22 +26,24 @@ def set_up(routes):
 
 
 def get_btc_candles():
-    candles = {}
-    candles[jh.key(exchanges.SANDBOX, 'BTCUSD')] = {
-        'exchange': exchanges.SANDBOX,
-        'symbol': 'BTCUSD',
-        'candles': fake_range_candle_from_range_prices(range(1, 100))
+    return {
+        jh.key(exchanges.SANDBOX, 'BTCUSD'): {
+            'exchange': exchanges.SANDBOX,
+            'symbol': 'BTCUSD',
+            'candles': fake_range_candle_from_range_prices(range(1, 100)),
+        }
     }
-    return candles
 
 
 def get_btc_and_eth_candles():
-    candles = {}
-    candles[jh.key(exchanges.SANDBOX, 'BTCUSD')] = {
-        'exchange': exchanges.SANDBOX,
-        'symbol': 'BTCUSD',
-        'candles': fake_range_candle_from_range_prices(range(101, 200))
+    candles = {
+        jh.key(exchanges.SANDBOX, 'BTCUSD'): {
+            'exchange': exchanges.SANDBOX,
+            'symbol': 'BTCUSD',
+            'candles': fake_range_candle_from_range_prices(range(101, 200)),
+        }
     }
+
     candles[jh.key(exchanges.SANDBOX, 'ETHUSD')] = {
         'exchange': exchanges.SANDBOX,
         'symbol': 'ETHUSD',
@@ -264,7 +266,13 @@ def test_multiple_routes_can_communicate_with_each_other():
         o: Order = s.orders[0]
         short_candles = store.candles.get_candles(r.exchange, r.symbol, '1m')
         assert o.created_at == short_candles[4][0] + 60_000
-        if r.strategy.trades_count == 1:
+        if r.strategy.trades_count == 0:
+            assert len(s.orders) == 1
+            # assert that the order got canceled
+            assert o.is_canceled is True
+            assert s.orders[0].role == order_roles.OPEN_POSITION
+            assert s.orders[0].type == order_types.LIMIT
+        elif r.strategy.trades_count == 1:
             assert len(s.orders) == 3
             assert o.is_executed is True
             assert s.orders[0].role == order_roles.OPEN_POSITION
@@ -273,12 +281,6 @@ def test_multiple_routes_can_communicate_with_each_other():
             assert s.orders[2].type == order_types.STOP
             assert s.orders[1].role == order_roles.CLOSE_POSITION
             assert s.orders[1].type == order_types.LIMIT
-        elif r.strategy.trades_count == 0:
-            assert len(s.orders) == 1
-            # assert that the order got canceled
-            assert o.is_canceled is True
-            assert s.orders[0].role == order_roles.OPEN_POSITION
-            assert s.orders[0].type == order_types.LIMIT
 
 
 def test_is_smart_enough_to_open_positions_via_market_orders():

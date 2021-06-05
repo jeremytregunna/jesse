@@ -2,10 +2,7 @@ from tabulate import tabulate
 
 
 def key_value(data, title, alignments=None, uppercase_title=True):
-    table = []
-
-    for d in data:
-        table.append(d)
+    table = [d for d in data]
 
     if alignments is None:
         print(tabulate(table, headers=[title.upper() if uppercase_title else title, ''], tablefmt="presto"))

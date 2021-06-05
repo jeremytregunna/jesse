@@ -52,7 +52,7 @@ def trades(trades_list: list, daily_balance: list):
     starting_balance = round(starting_balance, 2)
     current_balance = round(current_balance, 2)
 
-    if len(trades_list) == 0:
+    if not trades_list:
         return None
 
     df = pd.DataFrame.from_records([t.to_dict() for t in trades_list])

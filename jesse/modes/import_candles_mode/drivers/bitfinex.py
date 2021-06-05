@@ -40,9 +40,7 @@ class Bitfinex(CandleExchange):
             )
 
         first_timestamp = int(data[0][0])
-        second_timestamp = first_timestamp + 60_000 * 1440
-
-        return second_timestamp
+        return first_timestamp + 60_000 * 1440
 
     def fetch(self, symbol, start_timestamp):
         # since Bitfinex API skips candles with "volume=0", we have to send end_timestamp
@@ -62,10 +60,7 @@ class Bitfinex(CandleExchange):
         )
 
         data = response.json()
-        candles = []
-
-        for d in data:
-            candles.append({
+        return [{
                 'id': jh.generate_unique_id(),
                 'symbol': symbol,
                 'exchange': self.name,
@@ -75,6 +70,4 @@ class Bitfinex(CandleExchange):
                 'high': d[3],
                 'low': d[4],
                 'volume': d[5]
-            })
-
-        return candles
+            } for d in data]

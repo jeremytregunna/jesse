@@ -46,8 +46,15 @@ def np_ffill(arr, axis=0):
     idx_shape = tuple([slice(None)] + [np.newaxis] * (len(arr.shape) - axis - 1))
     idx = np.where(~np.isnan(arr), np.arange(arr.shape[axis])[idx_shape], 0)
     np.maximum.accumulate(idx, axis=axis, out=idx)
-    slc = [np.arange(k)[tuple([slice(None) if dim == i else np.newaxis
-                               for dim in range(len(arr.shape))])]
-           for i, k in enumerate(arr.shape)]
+    slc = [
+        np.arange(k)[
+            tuple(
+                slice(None) if dim == i else np.newaxis
+                for dim in range(len(arr.shape))
+            )
+        ]
+        for i, k in enumerate(arr.shape)
+    ]
+
     slc[axis] = idx
     return arr[tuple(slc)]

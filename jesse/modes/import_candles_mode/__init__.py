@@ -261,8 +261,7 @@ def _fill_absent_candles(temp_candles, start_timestamp, end_timestamp):
     started = False
     loop_length = ((end_timestamp - start_timestamp) / 60000) + 1
 
-    i = 0
-    while i < loop_length:
+    for _ in range(loop_length):
         candle_for_timestamp = pydash.find(
             temp_candles, lambda c: c['timestamp'] == start_timestamp)
 
@@ -298,8 +297,6 @@ def _fill_absent_candles(temp_candles, start_timestamp, end_timestamp):
             candles.append(candle_for_timestamp)
 
         start_timestamp += 60000
-        i += 1
-
     return candles
 
 
