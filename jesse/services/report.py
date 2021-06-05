@@ -201,14 +201,15 @@ def portfolio_metrics():
 
 
 def info():
-    array = []
-
-    for w in store.logs.info[::-1][0:5]:
-        array.append(
-            [jh.timestamp_to_time(w['time'])[11:19],
-             (w['message'][:70] + '..') if len(w['message']) > 70 else w['message']])
-
-    return array
+    return [
+        [
+            jh.timestamp_to_time(w['time'])[11:19],
+            (w['message'][:70] + '..')
+            if len(w['message']) > 70
+            else w['message'],
+        ]
+        for w in store.logs.info[::-1][0:5]
+    ]
 
 
 def watch_list():
@@ -228,13 +229,15 @@ def watch_list():
 
 
 def errors():
-    array = []
-
-    for w in store.logs.errors[::-1][0:5]:
-        array.append([jh.timestamp_to_time(w['time'])[11:19],
-                      (w['message'][:70] + '..') if len(w['message']) > 70 else w['message']])
-
-    return array
+    return [
+        [
+            jh.timestamp_to_time(w['time'])[11:19],
+            (w['message'][:70] + '..')
+            if len(w['message']) > 70
+            else w['message'],
+        ]
+        for w in store.logs.errors[::-1][0:5]
+    ]
 
 
 def orders():

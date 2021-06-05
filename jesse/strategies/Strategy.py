@@ -588,11 +588,13 @@ class Strategy(ABC):
                         )
 
         # validations: stop-loss and take-profit should not be the same
-        if self.position.is_open:
-            if (self.stop_loss is not None and self.take_profit is not None) and np.array_equal(self.stop_loss,
-                                                                                                self.take_profit):
-                raise exceptions.InvalidStrategy(
-                    'stop-loss and take-profit should not be exactly the same. Just use either one of them and it will do.')
+        if (
+            self.position.is_open
+            and (self.stop_loss is not None and self.take_profit is not None)
+            and np.array_equal(self.stop_loss, self.take_profit)
+        ):
+            raise exceptions.InvalidStrategy(
+                'stop-loss and take-profit should not be exactly the same. Just use either one of them and it will do.')
 
     def update_position(self):
         pass
@@ -1041,10 +1043,7 @@ class Strategy(ABC):
             self.trade.qty = order.qty
             self.trade.opened_at = jh.now()
             self.trade.entry_candle_timestamp = self.current_candle[0]
-        elif role == order_roles.INCREASE_POSITION:
-            self.trade.orders.append(order)
-            self.trade.qty += order.qty
-        elif role == order_roles.REDUCE_POSITION:
+        elif role in [order_roles.INCREASE_POSITION, order_roles.REDUCE_POSITION]:
             self.trade.orders.append(order)
             self.trade.qty += order.qty
         elif role == order_roles.CLOSE_POSITION:

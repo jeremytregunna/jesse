@@ -43,11 +43,7 @@ class Genetics(ABC):
         self.charset = charset
         self.fitness_goal = fitness_goal
 
-        if options is None:
-            self.options = {}
-        else:
-            self.options = options
-
+        self.options = {} if options is None else options
         os.makedirs('./storage/temp/optimize', exist_ok=True)
         self.temp_path = './storage/temp/optimize/{}-{}-{}-{}.pickle'.format(
             self.options['strategy_name'], self.options['exchange'],
@@ -58,9 +54,10 @@ class Genetics(ABC):
             raise ValueError('fitness scores must be between 0 and 1')
 
         # if temp file exists, load data to resume previous session
-        if jh.file_exists(self.temp_path):
-            if click.confirm('Previous session detected. Do you want to resume?', default=True):
-                self.load_progress()
+        if jh.file_exists(self.temp_path) and click.confirm(
+            'Previous session detected. Do you want to resume?', default=True
+        ):
+            self.load_progress()
 
     @abstractmethod
     def fitness(self, dna) -> tuple:
@@ -150,13 +147,11 @@ class Genetics(ABC):
         mommy = self.select_person()
         daddy = self.select_person()
 
-        dna = ''
+        dna = ''.join(
+            daddy['dna'][i] if i % 2 == 0 else mommy['dna'][i]
+            for i in range(self.solution_len)
+        )
 
-        for i in range(self.solution_len):
-            if i % 2 == 0:
-                dna += daddy['dna'][i]
-            else:
-                dna += mommy['dna'][i]
 
         fitness_score, fitness_log = self.fitness(dna)
 
@@ -168,10 +163,7 @@ class Genetics(ABC):
 
     def select_person(self):
         random_index = np.random.choice(self.population_size, int(self.population_size / 100), replace=False)
-        chosen_ones = []
-
-        for r in random_index:
-            chosen_ones.append(self.population[r])
+        chosen_ones = [self.population[r] for r in random_index]
 
         return pydash.max_by(chosen_ones, 'fitness')
 
@@ -323,8 +315,8 @@ class Genetics(ABC):
         """
         path = './storage/genetics/{}.txt'.format(self.session_id)
         os.makedirs('./storage/genetics', exist_ok=True)
-        txt = ''
         with open(path, 'a') as f:
+            txt = ''
             txt += '\n\n'
             txt += '# iteration {}'.format(index)
             txt += '\n'

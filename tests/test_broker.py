@@ -296,7 +296,7 @@ def test_stop_loss():
     # execute stop order
     order.execute()
     assert position.is_close == True
-    assert position.entry_price == None
+    assert position.entry_price is None
     assert position.exit_price == 40
     assert exchange.balance == 990
 

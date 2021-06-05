@@ -29,7 +29,4 @@ class Test47(Strategy):
         if self.index == 0:
             return False
 
-        if self.index == 10:
-            return False
-
-        return True
+        return self.index != 10

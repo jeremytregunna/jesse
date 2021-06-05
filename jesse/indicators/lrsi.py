@@ -50,11 +50,7 @@ def lrsi(candles: np.ndarray, alpha=0.2, sequential=False) -> Union[float, np.nd
         else:
             cd = cd + l3[i] - l2[i]
 
-        if cu + cd == 0:
-            rsi[i] = 0
-        else:
-            rsi[i] = cu / (cu + cd)
-
+        rsi[i] = 0 if cu + cd == 0 else cu / (cu + cd)
     if sequential:
         return rsi
     else:

@@ -38,7 +38,4 @@ class Test36(Strategy):
         if self.index == 0 and self.average_take_profit == 3.5:
             return True
 
-        if self.index == 10 and self.average_stop_loss == 13.5:
-            return True
-
-        return False
+        return self.index == 10 and self.average_stop_loss == 13.5

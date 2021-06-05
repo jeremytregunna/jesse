@@ -33,7 +33,11 @@ def get_strategy(exchange, symbol):
 
 def get_route(exchange, symbol):
     from jesse.routes import router
-    r = next(
-        (r for r in router.routes if r.exchange == exchange and r.symbol == symbol),
-        None)
-    return r
+    return next(
+        (
+            r
+            for r in router.routes
+            if r.exchange == exchange and r.symbol == symbol
+        ),
+        None,
+    )

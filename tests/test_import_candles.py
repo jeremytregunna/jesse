@@ -2,9 +2,7 @@ import jesse.helpers as jh
 import jesse.modes.import_candles_mode as importer
 from tests.data import test_candles_0
 
-test_object_candles = []
-for c in test_candles_0:
-    test_object_candles.append({
+test_object_candles = [{
         'id': jh.generate_unique_id(),
         'symbol': 'BTCUSD',
         'exchange': 'Sandbox',
@@ -14,8 +12,7 @@ for c in test_candles_0:
         'low': c[3],
         'close': c[4],
         'volume': c[5]
-    })
-
+    } for c in test_candles_0]
 smaller_data_set = test_object_candles[0:7].copy()
 
 
